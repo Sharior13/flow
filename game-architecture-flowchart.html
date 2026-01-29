@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel Fighter 2D - Architecture Flowchart</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .section {
+            margin-bottom: 50px;
+        }
+        
+        .section h2 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .diagram-container {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .legend {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+            padding: 20px;
+            background: #fff3cd;
+            border-radius: 10px;
+            border-left: 5px solid #ffc107;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .legend-color {
+            width: 30px;
+            height: 30px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .flow-description {
+            background: #e7f3ff;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #2196F3;
+            margin: 20px 0;
+        }
+        
+        .flow-description h3 {
+            color: #1976D2;
+            margin-bottom: 15px;
+        }
+        
+        .flow-description ol {
+            padding-left: 25px;
+        }
+        
+        .flow-description li {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+        
+        .file-structure {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+        }
+        
+        .file-structure .folder {
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        .file-structure .file {
+            color: #2c3e50;
+            margin-left: 20px;
+        }
+        
+        .file-structure .description {
+            color: #7f8c8d;
+            font-style: italic;
+            margin-left: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .legend {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎮 Pixel Fighter 2D</h1>
+            <p>Complete Architecture & Code Flow Documentation</p>
+        </div>
+        
+        <div class="content">
+            <!-- File Structure Section -->
+            <div class="section">
+                <h2>📁 Project File Structure</h2>
+                <div class="file-structure">
+                    <div><span class="folder">project-root/</span></div>
+                    <div><span class="file">├── server.js</span> <span class="description">// Express server & Socket.io initialization</span></div>
+                    <div><span class="file">├── index.html</span> <span class="description">// Main HTML entry point</span></div>
+                    <div><span class="file">├── style.css</span> <span class="description">// Global styles</span></div>
+                    <div><span class="folder">├── public/</span></div>
+                    <div><span class="file">│   └── js/</span></div>
+                    <div><span class="file">│       ├── main.js</span> <span class="description">// Client entry, title screen logic</span></div>
+                    <div><span class="file">│       ├── socket.js</span> <span class="description">// Client-side socket & input handling</span></div>
+                    <div><span class="file">│       ├── render.js</span> <span class="description">// Game rendering & animation loop</span></div>
+                    <div><span class="file">│       ├── input.js</span> <span class="description">// Keyboard input tracking</span></div>
+                    <div><span class="file">│       └── characterSelect.js</span> <span class="description">// Character selection UI</span></div>
+                    <div><span class="folder">├── server/</span></div>
+                    <div><span class="file">│   ├── networking/</span></div>
+                    <div><span class="file">│   │   └── socketHandler.js</span> <span class="description">// Server socket event handlers</span></div>
+                    <div><span class="file">│   └── game/</span></div>
+                    <div><span class="file">│       ├── matchMaking.js</span> <span class="description">// Queue & match creation</span></div>
+                    <div><span class="file">│       ├── matchManager.js</span> <span class="description">// Match state & character selection</span></div>
+                    <div><span class="file">│       ├── gameState.js</span> <span class="description">// Game loop & physics simulation</span></div>
+                    <div><span class="file">│       └── characterData.js</span> <span class="description">// Character stats & abilities</span></div>
+                </div>
+            </div>
+
+            <!-- Legend -->
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #4A90E2;"></div>
+                    <span><strong>Client-Side</strong> (Browser)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #50C878;"></div>
+                    <span><strong>Server-Side</strong> (Node.js)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #F5A623;"></div>
+                    <span><strong>Socket Events</strong> (Bi-directional)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #BD10E0;"></div>
+                    <span><strong>Game Logic</strong> (Server Authority)</span>
+                </div>
+            </div>
+
+            <!-- System Architecture Diagram -->
+            <div class="section">
+                <h2>🏗️ System Architecture Overview</h2>
+                <div class="diagram-container">
+                    <div class="mermaid">
+graph TB
+    subgraph "CLIENT (Browser)"
+        HTML[index.html]
+        MAIN[main.js<br/>Title Screen]
+        SOCK_C[socket.js<br/>Socket Client]
+        INPUT[input.js<br/>Keyboard Input]
+        CHAR_C[characterSelect.js<br/>Character UI]
+        RENDER[render.js<br/>Canvas Rendering]
+    end
+    
+    subgraph "SERVER (Node.js)"
+        SERVER[server.js<br/>Express + Socket.io]
+        SOCK_H[socketHandler.js<br/>Event Router]
+        
+        subgraph "Game Systems"
+            MATCH_M[matchMaking.js<br/>Queue System]
+            MATCH_MGR[matchManager.js<br/>Match State]
+            GAME_S[gameState.js<br/>Game Loop & Physics]
+            CHAR_D[characterData.js<br/>Character Stats]
+        end
+    end
+    
+    HTML --> MAIN
+    MAIN --> SOCK_C
+    MAIN --> RENDER
+    INPUT --> SOCK_C
+    CHAR_C --> SOCK_C
+    
+    SOCK_C <-.Socket.io.-> SERVER
+    SERVER --> SOCK_H
+    SOCK_H --> MATCH_M
+    SOCK_H --> MATCH_MGR
+    SOCK_H --> GAME_S
+    GAME_S --> CHAR_D
+    MATCH_MGR --> CHAR_D
+    
+    GAME_S -.gameStateUpdate.-> SOCK_C
+    SOCK_C --> RENDER
+    
+    style HTML fill:#E3F2FD
+    style MAIN fill:#4A90E2,color:#fff
+    style SOCK_C fill:#F5A623,color:#fff
+    style INPUT fill:#4A90E2,color:#fff
+    style CHAR_C fill:#4A90E2,color:#fff
+    style RENDER fill:#4A90E2,color:#fff
+    
+    style SERVER fill:#50C878,color:#fff
+    style SOCK_H fill:#50C878,color:#fff
+    style MATCH_M fill:#BD10E0,color:#fff
+    style MATCH_MGR fill:#BD10E0,color:#fff
+    style GAME_S fill:#BD10E0,color:#fff
+    style CHAR_D fill:#50C878,color:#fff
+                    </div>
+                </div>
+            </div>
+
+            <!-- Complete Game Flow -->
+            <div class="section">
+                <h2>🔄 Complete Game Flow (Step-by-Step)</h2>
+                
+                <div class="flow-description">
+                    <h3>Phase 1: Game Start & Matchmaking</h3>
+                    <ol>
+                        <li><strong>Player loads page</strong>
+                            <ul>
+                                <li>index.html loads → imports main.js</li>
+                                <li>main.js executes titleScreen() → shows title UI</li>
+                            </ul>
+                        </li>
+                        <li><strong>Player clicks "Quick Play"</strong>
+                            <ul>
+                                <li>main.js → hideTitleScreen() → initializeSocket("quickStart")</li>
+                                <li>socket.js creates Socket.io connection</li>
+                            </ul>
+                        </li>
+                        <li><strong>Client emits: findMatch</strong>
+                            <ul>
+                                <li>Server: socketHandler.js receives event</li>
+                                <li>Calls matchMaking.addToQueue(socket)</li>
+                                <li>Player added to queue array</li>
+                            </ul>
+                        </li>
+                        <li><strong>Server emits: queueJoined</strong>
+                            <ul>
+                                <li>Client displays "Queue started!" message</li>
+                            </ul>
+                        </li>
+                        <li><strong>When 2 players in queue</strong>
+                            <ul>
+                                <li>matchMaking.tryMatch() executes</li>
+                                <li>Creates room via matchManager.createMatch()</li>
+                                <li>Both players join Socket.io room</li>
+                                <li>Match state created with phase: "CHARACTER_SELECT"</li>
+                            </ul>
+                        </li>
+                        <li><strong>Server emits: matchFound</strong>
+                            <ul>
+                                <li>Client: socket.js receives event</li>
+                                <li>Calls characterSelect.openCharacterSelect()</li>
+                                <li>Displays character grid UI</li>
+                            </ul>
+                        </li>
+                    </ol>
+                </div>
+
+                <div class="flow-description">
+                    <h3>Phase 2: Character Selection</h3>
+                    <ol>
+                        <li><strong>Player clicks character button</strong>
+                            <ul>
+                                <li>characterSelect.js updates local state</li>
+                                <li>Client emits: selectCharacter(characterId)</li>
+                            </ul>
+                        </li>
+                        <li><strong>Server receives selectCharacter</strong>
+                            <ul>
+                                <li>socketHandler.js → matchManager.selectCharacter()</li>
+                                <li>Updates player.character in match state</li>
+                                <li>Validates character exists in characterData.js</li>
+                            </ul>
+                        </li>
+                        <li><strong>Server emits: characterPreview</strong>
+                            <ul>
+                                <li>Broadcasts to other players in room</li>
+                                <li>Client shows "Opponent is choosing..."</li>
+                            </ul>
+                        </li>
+                        <li><strong>Player clicks "Lock In"</strong>
+                            <ul>
+                                <li>Client emits: lockCharacter</li>
+                            </ul>
+                        </li>
+                        <li><strong>Server receives lockCharacter</strong>
+                            <ul>
+                                <li>socketHandler.js → matchManager.lockCharacter()</li>
+                                <li>Sets player.locked = true</li>
+                                <li>Server emits: playerLocked (notify opponent)</li>
+                            </ul>
+                        </li>
+                        <li><strong>When all players locked OR timeout</strong>
+                            <ul>
+                                <li>matchManager.startFight() changes phase to "FIGHT"</li>
+                                <li>gameState.initializeGameState() creates game state</li>
+                                <li>Loads character stats from characterData.js</li>
+                                <li>Sets initial positions, health, abilities, cooldowns</li>
+                            </ul>
+                        </li>
+                        <li><strong>Server emits: startMatch</strong>
+                            <ul>
+                                <li>Client: socket.js hides character select UI</li>
+                                <li>Calls render.initializeRender()</li>
+                                <li>Starts animation loop (60 FPS)</li>
+                            </ul>
+                        </li>
+                        <li><strong>Server starts game loop</strong>
+                            <ul>
+                                <li>gameState.startGameLoop() begins</li>
+                                <li>gameTick() runs every 16.67ms (60 ticks/sec)</li>
+                            </ul>
+                        </li>
+                    </ol>
+                </div>
+
+                <div class="flow-description">
+                    <h3>Phase 3: Active Gameplay</h3>
+                    <ol>
+                        <li><strong>Input Capture (Client-Side)</strong>
+                            <ul>
+                                <li>input.js tracks keydown/keyup events</li>
+                                <li>Updates keys object (w,a,s,d, arrows, z,x,c, Shift)</li>
+                                <li>Updates actionTriggered flags</li>
+                            </ul>
+                        </li>
+                        <li><strong>Input Processing (Client-Side)</strong>
+                            <ul>
+                                <li>socket.js runs processInputs() every 16.67ms (60 FPS)</li>
+                                <li>Reads current key states</li>
+                                <li>Creates input array with move, jump, attack, block actions</li>
+                                <li>Movement sent continuously (direction: -1, 0, or 1)</li>
+                            </ul>
+                        </li>
+                        <li><strong>Client emits: playerInput (array of inputs)</strong>
+                            <ul>
+                                <li>Sent 60 times per second</li>
+                                <li>Example: [{type: "move", direction: 1}, {type: "jump"}]</li>
+                            </ul>
+                        </li>
+                        <li><strong>Server receives playerInput</strong>
+                            <ul>
+                                <li>socketHandler.js validates input array</li>
+                                <li>Loops through inputs, calls gameState.processInput() for each</li>
+                            </ul>
+                        </li>
+                        <li><strong>Input Buffering (Server-Side)</strong>
+                            <ul>
+                                <li>gameState.processInput() validates input</li>
+                                <li>Adds to player.inputBuffer (max 3 inputs)</li>
+                                <li>Updates player.lastInputTime</li>
+                            </ul>
+                        </li>
+                        <li><strong>Game Tick Execution (Server-Side)</strong>
+                            <ul>
+                                <li>gameTick() processes each player:</li>
+                                <li>→ Update cooldowns</li>
+                                <li>→ Process buffered inputs (shift from buffer)</li>
+                                <li>→ Execute actions based on input type:</li>
+                                <li>&nbsp;&nbsp;&nbsp;• move: applyMovement() → update position & velocity</li>
+                                <li>&nbsp;&nbsp;&nbsp;• jump: applyJump() → set vertical velocity</li>
+                                <li>&nbsp;&nbsp;&nbsp;• attack: executeAbility() → check range, apply damage</li>
+                                <li>&nbsp;&nbsp;&nbsp;• block: set isBlocking flag</li>
+                                <li>→ Apply physics: applyGravity() → update Y position</li>
+                                <li>→ Check boundaries (keep players in stage)</li>
+                                <li>→ Check win conditions (health, timeout)</li>
+                            </ul>
+                        </li>
+                        <li><strong>State Synchronization</strong>
+                            <ul>
+                                <li>Every tick: gameState.getClientGameState() creates snapshot</li>
+                                <li>Server emits: gameStateUpdate (entire game state)</li>
+                                <li>Sent to all players in room</li>
+                            </ul>
+                        </li>
+                        <li><strong>Client Rendering (Client-Side)</strong>
+                            <ul>
+                                <li>socket.js receives gameStateUpdate</li>
+                                <li>Calls render.updateGameState(state)</li>
+                                <li>render.js animate() loop (60 FPS):</li>
+                                <li>→ Clear canvas</li>
+                                <li>→ Draw grid lines</li>
+                                <li>→ Draw each player (position from server state)</li>
+                                <li>→ Draw health bars</li>
+                                <li>→ Draw cooldown UI</li>
+                                <li>→ Draw time remaining</li>
+                            </ul>
+                        </li>
+                    </ol>
+                </div>
+
+                <div class="flow-description">
+                    <h3>Phase 4: Match End</h3>
+                    <ol>
+                        <li><strong>Win Condition Triggered</strong>
+                            <ul>
+                                <li>Server: gameTick() detects:</li>
+                                <li>→ One player health = 0</li>
+                                <li>→ OR time expired (3 minutes)</li>
+                                <li>→ OR player disconnected</li>
+                            </ul>
+                        </li>
+                        <li><strong>End Match Process</strong>
+                            <ul>
+                                <li>gameState.endMatch() executes</li>
+                                <li>Determines winner (highest health if timeout)</li>
+                                <li>Changes phase to "ENDED"</li>
+                                <li>Stops game loop (clearInterval)</li>
+                            </ul>
+                        </li>
+                        <li><strong>Server emits: matchEnd</strong>
+                            <ul>
+                                <li>Sends winner socketId and final stats</li>
+                            </ul>
+                        </li>
+                        <li><strong>Client Cleanup</strong>
+                            <ul>
+                                <li>socket.js receives matchEnd event</li>
+                                <li>Calls render.stopRender() → stops animation loop</li>
+                                <li>Calls cleanupSocket() → disconnect socket, clear intervals</li>
+                                <li>Calls titleScreen() → return to main menu</li>
+                            </ul>
+                        </li>
+                        <li><strong>Server Cleanup</strong>
+                            <ul>
+                                <li>After 5 seconds: gameState.deleteGameState()</li>
+                                <li>Removes game state from memory</li>
+                                <li>matchManager.deleteMatch() removes match data</li>
+                            </ul>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- Detailed Flow Diagram -->
+            <div class="section">
+                <h2>📊 Detailed Gameplay Loop</h2>
+                <div class="diagram-container">
+                    <div class="mermaid">
+sequenceDiagram
+    participant Player as Player (Browser)
+    participant Input as input.js
+    participant Socket_C as socket.js (Client)
+    participant Socket_S as socketHandler.js
+    participant GameState as gameState.js
+    participant Render as render.js
+
+    Note over Player,Render: Match Started - Game Loop Active
+
+    loop Every 16.67ms (60 FPS)
+        Player->>Input: Press/Hold Keys
+        Input->>Input: Update keys object
+        Socket_C->>Socket_C: processInputs()
+        Socket_C->>Socket_C: Build input array
+        Socket_C->>Socket_S: emit("playerInput", inputs)
+        Socket_S->>GameState: processInput(roomId, socketId, input)
+        GameState->>GameState: Add to inputBuffer
+    end
+
+    loop Every 16.67ms (60 ticks)
+        GameState->>GameState: gameTick()
+        GameState->>GameState: Update cooldowns
+        GameState->>GameState: Process input buffer
+        GameState->>GameState: Apply movement
+        GameState->>GameState: Apply gravity
+        GameState->>GameState: Apply physics
+        GameState->>GameState: Check collisions
+        GameState->>GameState: Check win conditions
+        GameState->>Socket_S: emit("gameStateUpdate", state)
+        Socket_S->>Socket_C: gameStateUpdate event
+        Socket_C->>Render: updateGameState(state)
+    end
+
+    loop Every 16.67ms (60 FPS)
+        Render->>Render: animate()
+        Render->>Render: Clear canvas
+        Render->>Render: Draw players at positions
+        Render->>Render: Draw health bars
+        Render->>Render: Draw UI elements
+        Render->>Player: Display frame
+    end
+
+    Note over Player,Render: Win Condition Met
+    GameState->>GameState: endMatch()
+    GameState->>Socket_S: emit("matchEnd", winner)
+    Socket_S->>Socket_C: matchEnd event
+    Socket_C->>Render: stopRender()
+    Socket_C->>Socket_C: cleanupSocket()
+    Socket_C->>Player: Return to title screen
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Flow Diagram -->
+            <div class="section">
+                <h2>💾 Data Flow & State Management</h2>
+                <div class="diagram-container">
+                    <div class="mermaid">
+graph LR
+    subgraph "Client State"
+        KEYS[keys object<br/>Current key states]
+        ACTIONS[actionTriggered<br/>Action flags]
+        GAME_STATE_C[currentGameState<br/>Latest server state]
+    end
+    
+    subgraph "Server State"
+        QUEUE[queue array<br/>Waiting players]
+        MATCHES[matches Map<br/>Active matches]
+        GAME_STATES[gameStates Map<br/>Game simulations]
+    end
+    
+    subgraph "Match State"
+        MATCH[Match Object<br/>roomId, phase, players]
+        PLAYER[Player Object<br/>socketId, character, locked]
+    end
+    
+    subgraph "Game State"
+        GAME[Game Object<br/>roomId, phase, tickCount]
+        PLAYER_G[Player Game Data<br/>position, velocity, health]
+        PHYSICS[Physics Data<br/>gravity, boundaries]
+    end
+    
+    KEYS --> ACTIONS
+    ACTIONS --> |Input Processing| GAME_STATE_C
+    
+    QUEUE --> |Match Found| MATCHES
+    MATCHES --> |All Locked| GAME_STATES
+    
+    MATCH --> PLAYER
+    GAME --> PLAYER_G
+    GAME --> PHYSICS
+    
+    GAME_STATES --> |State Update| GAME_STATE_C
+    
+    style KEYS fill:#4A90E2,color:#fff
+    style ACTIONS fill:#4A90E2,color:#fff
+    style GAME_STATE_C fill:#4A90E2,color:#fff
+    style QUEUE fill:#50C878,color:#fff
+    style MATCHES fill:#BD10E0,color:#fff
+    style GAME_STATES fill:#BD10E0,color:#fff
+    style MATCH fill:#F5A623,color:#fff
+    style PLAYER fill:#F5A623,color:#fff
+    style GAME fill:#BD10E0,color:#fff
+    style PLAYER_G fill:#BD10E0,color:#fff
+    style PHYSICS fill:#BD10E0,color:#fff
+                    </div>
+                </div>
+            </div>
+
+            <!-- Key Concepts -->
+            <div class="section">
+                <h2>💡 Key Architecture Concepts</h2>
+                
+                <div class="flow-description">
+                    <h3>Server-Authoritative Architecture</h3>
+                    <ol>
+                        <li><strong>Client</strong>: Captures input, renders graphics</li>
+                        <li><strong>Server</strong>: Runs game simulation, validates actions, determines outcomes</li>
+                        <li><strong>Why</strong>: Prevents cheating, ensures consistency across all clients</li>
+                        <li><strong>Trade-off</strong>: Introduces network latency (mitigated by 60 FPS sync)</li>
+                    </ol>
+                </div>
+
+                <div class="flow-description">
+                    <h3>Input Buffer System</h3>
+                    <ol>
+                        <li>Client sends inputs at 60 FPS (continuous stream)</li>
+                        <li>Server buffers up to 3 inputs per player</li>
+                        <li>Game tick processes one input from buffer per tick</li>
+                        <li>Ensures no input loss due to network jitter</li>
+                        <li>Continuous movement: stores currentDirection on player</li>
+                    </ol>
+                </div>
+
+                <div class="flow-description">
+                    <h3>State Synchronization</h3>
+                    <ol>
+                        <li>Server broadcasts full game state 60 times/second</li>
+                        <li>Clients receive state and render it directly</li>
+                        <li>No client-side prediction (simple approach)</li>
+                        <li>Visual smoothness achieved by high tick rate</li>
+                    </ol>
+                </div>
+
+                <div class="flow-description">
+                    <h3>Match Lifecycle Phases</h3>
+                    <ol>
+                        <li><strong>QUEUE</strong>: Players waiting for match</li>
+                        <li><strong>CHARACTER_SELECT</strong>: Choosing characters (10s timeout)</li>
+                        <li><strong>FIGHT</strong>: Active gameplay (180s max duration)</li>
+                        <li><strong>ENDED</strong>: Match finished, cleanup in progress</li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- Socket Events Reference -->
+            <div class="section">
+                <h2>📡 Complete Socket Events Reference</h2>
+                
+                <div class="file-structure">
+<strong>CLIENT → SERVER</strong>
+• findMatch(mode, roomId) - Request to join matchmaking
+• selectCharacter(characterId) - Player selects a character
+• lockCharacter() - Player confirms character choice
+• playerInput(inputs[]) - Send game inputs (60/sec during match)
+
+<strong>SERVER → CLIENT</strong>
+• queueJoined() - Confirmation of queue entry
+• matchFound({roomId, players}) - Match created, 2 players found
+• characterPreview({socketId, characterId}) - Opponent selected character
+• playerLocked({socketId, playerIndex, characterId}) - Opponent locked in
+• startMatch({roomId, players, gameState}) - Match begins, start rendering
+• gameStateUpdate(state) - Game state sync (60/sec during match)
+• abilityExecuted({socketId, ability, result}) - Ability used notification
+• matchEnd({winner, finalStats, reason}) - Match finished
+• matchError({message}) - Error occurred
+• playerDisconnected(socketId) - Player left the match
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#4A90E2',
+                primaryTextColor: '#fff',
+                primaryBorderColor: '#2C5AA0',
+                lineColor: '#7f8c8d',
+                secondaryColor: '#50C878',
+                tertiaryColor: '#F5A623',
+            },
+            flowchart: {
+                curve: 'basis',
+                padding: 20
+            },
+            sequence: {
+                diagramMarginX: 50,
+                diagramMarginY: 10,
+                actorMargin: 50,
+                width: 150,
+                height: 65,
+                boxMargin: 10
+            }
+        });
+    </script>
+</body>
+</html>
