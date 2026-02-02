@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2D Fighter Game - Flow Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .legend {
+            background: #f8f9fa;
+            padding: 20px 30px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .legend h3 {
+            margin-bottom: 15px;
+            color: #2a5298;
+        }
+        
+        .legend-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .legend-color {
+            width: 30px;
+            height: 30px;
+            border-radius: 5px;
+            border: 2px solid #333;
+        }
+        
+        .client { background: #4A90E2; }
+        .server { background: #E74C3C; }
+        .decision { background: #F39C12; }
+        .data { background: #27AE60; }
+        
+        .chart-container {
+            padding: 30px;
+            overflow-x: auto;
+            background: white;
+        }
+        
+        .controls {
+            background: #f8f9fa;
+            padding: 15px 30px;
+            border-top: 2px solid #e9ecef;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .controls button {
+            padding: 10px 20px;
+            background: #2a5298;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+        
+        .controls button:hover {
+            background: #1e3c72;
+        }
+        
+        .zoom-level {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        #mermaid-chart {
+            transform-origin: top left;
+            transition: transform 0.3s ease;
+        }
+        
+        .info-section {
+            background: #e3f2fd;
+            padding: 20px 30px;
+            border-top: 2px solid #2196f3;
+        }
+        
+        .info-section h3 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+        
+        .info-section ul {
+            margin-left: 20px;
+            color: #424242;
+        }
+        
+        .info-section li {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎮 2D Fighting Game Architecture</h1>
+            <p>Complete Flow from Connection to Match End</p>
+        </header>
+        
+        <div class="legend">
+            <h3>Legend</h3>
+            <div class="legend-items">
+                <div class="legend-item">
+                    <div class="legend-color client"></div>
+                    <span><strong>Client-Side</strong> - Browser/Frontend Logic</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color server"></div>
+                    <span><strong>Server-Side</strong> - Node.js/Socket.io Backend</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color decision"></div>
+                    <span><strong>Decisions</strong> - Conditional Logic</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button onclick="zoomIn()">🔍 Zoom In</button>
+            <button onclick="zoomOut()">🔍 Zoom Out</button>
+            <button onclick="resetZoom()">↺ Reset Zoom</button>
+            <button onclick="downloadSVG()">💾 Download SVG</button>
+            <span class="zoom-level">Zoom: <span id="zoom-display">100%</span></span>
+        </div>
+        
+        <div class="chart-container">
+            <div id="mermaid-chart" class="mermaid">
+flowchart TD
+    Start([Player Opens Game]) --> TitleScreen[Title Screen Displayed]
+    
+    TitleScreen --> QuickPlay{Player Clicks<br/>Quick Play?}
+    QuickPlay -->|Yes| InitSocket[Initialize Socket Connection]
+    QuickPlay -->|No| CustomRoom[Custom Room - Not Implemented]
+    
+    InitSocket --> EmitFindMatch[Emit 'findMatch' with mode='quickStart']
+    
+    %% Server Side - Matchmaking
+    EmitFindMatch --> ServerReceive[Server Receives findMatch]
+    ServerReceive --> AddToQueue[Add Player to Queue]
+    AddToQueue --> QueueCheck{Queue Size >= 2?}
+    
+    QueueCheck -->|No| WaitQueue[Wait in Queue<br/>Show 'Queue Started!']
+    WaitQueue --> QueueCheck
+    
+    QueueCheck -->|Yes| CreateMatch[Create Match<br/>- Generate Room ID<br/>- Select Random Map<br/>- Create Player Objects]
+    
+    CreateMatch --> JoinRoom[Both Players Join Room]
+    JoinRoom --> EmitMatchFound[Emit 'matchFound' to Both Players]
+    EmitMatchFound --> StartCharSelectTimeout[Start Character Select Timeout<br/>100ms default]
+    
+    %% Client Side - Character Selection
+    EmitMatchFound --> ClientMatchFound[Client Receives 'matchFound']
+    ClientMatchFound --> OpenCharSelect[Open Character Selection UI<br/>Hide Queue UI]
+    
+    OpenCharSelect --> RenderGrid[Render Character Grid<br/>- Luffy, Naruto, Zoro, Kakashi]
+    
+    RenderGrid --> PlayerSelect{Player Selects<br/>Character?}
+    PlayerSelect -->|Yes| EmitSelect[Emit 'selectCharacter' with characterId]
+    EmitSelect --> ServerSelect[Server Receives selectCharacter]
+    ServerSelect --> UpdateMatch[Update Match State<br/>Set player.character]
+    UpdateMatch --> BroadcastPreview[Broadcast 'characterPreview' to Room]
+    BroadcastPreview --> ShowPreview[Show Opponent's Selection]
+    
+    ShowPreview --> PlayerLock{Player Clicks<br/>Lock In?}
+    PlayerSelect -->|No| PlayerLock
+    
+    PlayerLock -->|Yes| EmitLock[Emit 'lockCharacter']
+    EmitLock --> ServerLock[Server Receives lockCharacter]
+    ServerLock --> SetLocked[Set player.locked = true]
+    SetLocked --> BroadcastLocked[Broadcast 'playerLocked' to Room]
+    BroadcastLocked --> AllLocked{All Players<br/>Locked?}
+    
+    AllLocked -->|No| WaitLock[Wait for Other Players]
+    WaitLock --> AllLocked
+    
+    AllLocked -->|Yes| ClearTimeout[Clear Character Select Timeout]
+    ClearTimeout --> StartFight[Start Fight Phase]
+    
+    %% Timeout Path
+    StartCharSelectTimeout --> TimeoutExpire{Timeout<br/>Expires?}
+    TimeoutExpire -->|Yes| AutoSelect[Auto-Select Random Characters<br/>for Unlocked Players]
+    AutoSelect --> StartFight
+    TimeoutExpire -->|No| AllLocked
+    
+    %% Fight Initialization
+    StartFight --> InitGameState[Initialize Game State<br/>- Load Map Data<br/>- Set Spawn Points<br/>- Initialize Player Stats<br/>- Set Phase to 'FIGHT']
+    
+    InitGameState --> EmitStartMatch[Emit 'startMatch' with:<br/>- Room ID<br/>- Players Data<br/>- Map Data<br/>- Initial Game State]
+    
+    EmitStartMatch --> ClientStartMatch[Client Receives 'startMatch']
+    ClientStartMatch --> HideCharSelect[Hide Character Select UI]
+    HideCharSelect --> SetMapClient[Set Map Background Image]
+    SetMapClient --> InitRender[Initialize Render Loop]
+    InitRender --> StartInputLoop[Start Input Processing<br/>60 FPS Interval]
+    
+    EmitStartMatch --> StartGameLoop[Server Starts Game Loop<br/>60 Ticks/Second]
+    
+    %% Game Loop - Client Side
+    StartInputLoop --> ProcessInput[Process Player Input:<br/>- Movement a/d<br/>- Jump w<br/>- Basic z<br/>- Special x<br/>- Ultimate c<br/>- Block Shift]
+    
+    ProcessInput --> CreateInputBatch[Create Input Batch Array]
+    CreateInputBatch --> EmitInput[Emit 'playerInput' with Batch]
+    EmitInput --> ProcessInput
+    
+    %% Game Loop - Server Side
+    StartGameLoop --> GameTick[Game Tick Every 16.67ms]
+    
+    GameTick --> ServerReceiveInput[Receive 'playerInput' from Clients]
+    ServerReceiveInput --> AddToBuffer[Add Inputs to Player's Input Buffer]
+    
+    GameTick --> UpdateCooldowns[Update All Player Cooldowns]
+    UpdateCooldowns --> ProcessBuffer[Process Input Buffers:<br/>- Extract Latest Movement<br/>- Process Jump/Attack/Block]
+    
+    ProcessBuffer --> ApplyMovement{Movement<br/>Input?}
+    ApplyMovement -->|Yes| UpdateVelocity[Update Player Velocity<br/>Apply Direction * Speed]
+    UpdateVelocity --> UpdatePosition[Update Position<br/>Clamp to Boundaries]
+    UpdatePosition --> ApplyPhysics
+    ApplyMovement -->|No| ApplyPhysics[Apply Gravity<br/>Check Ground Collision]
+    
+    ProcessBuffer --> CheckJump{Jump<br/>Input?}
+    CheckJump -->|Yes| CanJump{Is Grounded &<br/>Not Stunned?}
+    CanJump -->|Yes| ExecuteJump[Set velocity.y = -jumpForce<br/>Set isGrounded = false]
+    ExecuteJump --> ApplyPhysics
+    CanJump -->|No| ApplyPhysics
+    CheckJump -->|No| ApplyPhysics
+    
+    ProcessBuffer --> CheckAttack{Attack<br/>Input?}
+    CheckAttack -->|Yes| ValidateAbility{On Cooldown?<br/>Is Stunned/Dead?}
+    ValidateAbility -->|Valid| ExecuteAbility[Execute Ability:<br/>- Set isAttacking = true<br/>- Apply Cooldown<br/>- Find Targets in Range]
+    ExecuteAbility --> ApplyDamage[Apply Damage & Knockback<br/>Update Stats<br/>Check Death]
+    ApplyDamage --> BroadcastAbility[Broadcast 'abilityExecuted']
+    BroadcastAbility --> ResetAttack[Reset isAttacking after duration]
+    ResetAttack --> ApplyPhysics
+    ValidateAbility -->|Invalid| ApplyPhysics
+    CheckAttack -->|No| ApplyPhysics
+    
+    ApplyPhysics --> CheckWin{Win<br/>Condition?}
+    CheckWin -->|1 Player Alive| EndMatch[End Match:<br/>Declare Winner<br/>Set Phase to 'ENDED']
+    CheckWin -->|Time Expired| DetermineWinner[Determine Winner<br/>by Health]
+    DetermineWinner --> EndMatch
+    CheckWin -->|Continue| EmitState[Emit 'gameStateUpdate' to Room]
+    
+    EmitState --> ClientUpdate[Client Receives 'gameStateUpdate']
+    ClientUpdate --> UpdateLocalState[Update Local Game State]
+    UpdateLocalState --> RenderFrame[Render Frame:<br/>- Update Camera<br/>- Draw Background<br/>- Draw Players<br/>- Draw Health Bars<br/>- Draw HUD<br/>- Draw Cooldowns]
+    RenderFrame --> GameTick
+    
+    %% Match End
+    EndMatch --> StopGameLoop[Stop Server Game Loop]
+    StopGameLoop --> EmitMatchEnd[Emit 'matchEnd' with:<br/>- Winner<br/>- Final Stats<br/>- Reason]
+    EmitMatchEnd --> DeleteGameState[Delete Game State after 5s]
+    
+    EmitMatchEnd --> ClientMatchEnd[Client Receives 'matchEnd']
+    ClientMatchEnd --> StopRender[Stop Render Loop]
+    StopRender --> CleanupSocket[Cleanup Socket:<br/>- Clear Input Interval<br/>- Disconnect Socket<br/>- Reset State]
+    CleanupSocket --> ReturnTitle[Return to Title Screen]
+    
+    %% Disconnect Handling
+    GameTick --> CheckDisconnect{Player<br/>Disconnected?}
+    CheckDisconnect -->|Yes| RemoveFromQueue[Remove from Queue if Queuing]
+    RemoveFromQueue --> InMatch{In Active<br/>Match?}
+    InMatch -->|Yes| DeclareWinner[Declare Remaining Player Winner]
+    DeclareWinner --> EmitMatchEnd
+    InMatch -->|No| DeleteMatch[Delete Match Data]
+    DeleteMatch --> ReturnTitle
+    CheckDisconnect -->|No| GameTick
+    
+    ReturnTitle --> End([Game Ready for New Match])
+    
+    %% Styling
+    classDef clientClass fill:#4A90E2,stroke:#2E5C8A,color:#fff
+    classDef serverClass fill:#E74C3C,stroke:#A93226,color:#fff
+    classDef decisionClass fill:#F39C12,stroke:#B8860B,color:#fff
+    classDef dataClass fill:#27AE60,stroke:#1E8449,color:#fff
+    
+    class TitleScreen,InitSocket,ClientMatchFound,OpenCharSelect,RenderGrid,ShowPreview,ClientStartMatch,HideCharSelect,SetMapClient,InitRender,StartInputLoop,ProcessInput,CreateInputBatch,ClientUpdate,UpdateLocalState,RenderFrame,ClientMatchEnd,StopRender,CleanupSocket,ReturnTitle clientClass
+    
+    class ServerReceive,AddToQueue,CreateMatch,JoinRoom,EmitMatchFound,StartCharSelectTimeout,ServerSelect,UpdateMatch,BroadcastPreview,ServerLock,SetLocked,BroadcastLocked,StartFight,InitGameState,EmitStartMatch,StartGameLoop,GameTick,ServerReceiveInput,AddToBuffer,UpdateCooldowns,ProcessBuffer,UpdateVelocity,UpdatePosition,ApplyPhysics,ExecuteJump,ExecuteAbility,ApplyDamage,BroadcastAbility,ResetAttack,EndMatch,StopGameLoop,EmitMatchEnd,DeleteGameState,RemoveFromQueue,DeclareWinner,DeleteMatch serverClass
+    
+    class QueueCheck,QuickPlay,PlayerSelect,PlayerLock,AllLocked,TimeoutExpire,ApplyMovement,CheckJump,CanJump,CheckAttack,ValidateAbility,CheckWin,InMatch,CheckDisconnect decisionClass
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <h3>📋 Key Components Overview</h3>
+            <ul>
+                <li><strong>Matchmaking:</strong> Queue-based system with 2-player rooms and random map selection</li>
+                <li><strong>Character Selection:</strong> 4 characters with unique abilities, 100ms timeout with auto-select</li>
+                <li><strong>Game Loop:</strong> Server-authoritative at 60 ticks/second with client-side prediction</li>
+                <li><strong>Input System:</strong> Buffered inputs processed on server to prevent cheating</li>
+                <li><strong>Physics:</strong> Gravity, collision detection, and boundary constraints</li>
+                <li><strong>Combat:</strong> Three ability tiers (basic, special, ultimate) with cooldowns and range detection</li>
+                <li><strong>Rendering:</strong> Canvas-based with camera tracking and HUD elements</li>
+                <li><strong>Win Conditions:</strong> Last player standing or highest health when timer expires</li>
+            </ul>
+        </div>
+    </div>
+    
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: {
+                useMaxWidth: false,
+                htmlLabels: true,
+                curve: 'basis'
+            }
+        });
+        
+        let currentZoom = 1;
+        const zoomStep = 0.1;
+        const minZoom = 0.3;
+        const maxZoom = 2.0;
+        
+        function updateZoom() {
+            const chart = document.getElementById('mermaid-chart');
+            chart.style.transform = `scale(${currentZoom})`;
+            document.getElementById('zoom-display').textContent = Math.round(currentZoom * 100) + '%';
+        }
+        
+        function zoomIn() {
+            if (currentZoom < maxZoom) {
+                currentZoom += zoomStep;
+                updateZoom();
+            }
+        }
+        
+        function zoomOut() {
+            if (currentZoom > minZoom) {
+                currentZoom -= zoomStep;
+                updateZoom();
+            }
+        }
+        
+        function resetZoom() {
+            currentZoom = 1;
+            updateZoom();
+        }
+        
+        function downloadSVG() {
+            const svg = document.querySelector('#mermaid-chart svg');
+            if (svg) {
+                const serializer = new XMLSerializer();
+                const svgString = serializer.serializeToString(svg);
+                const blob = new Blob([svgString], { type: 'image/svg+xml' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = '2d-fighter-flowchart.svg';
+                a.click();
+                URL.revokeObjectURL(url);
+            }
+        }
+        
+        // Mouse wheel zoom
+        document.querySelector('.chart-container').addEventListener('wheel', function(e) {
+            if (e.ctrlKey) {
+                e.preventDefault();
+                if (e.deltaY < 0) {
+                    zoomIn();
+                } else {
+                    zoomOut();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+            
